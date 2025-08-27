@@ -12,6 +12,13 @@
         <a href="{{ route('menu') }}" class="hover:text-primary">Menú de la Semana</a>
         <a href="{{ route('about') }}" class="hover:text-primary">Nosotros</a>
         <a href="{{ route('contact') }}" class="hover:text-primary">Contacto</a>
+        <a href="{{ route('cart.index') }}" class="ml-6 text-lg hover:underline relative">
+          Carrito 🛒 
+          <span id="cart-count" class="absolute -top-2 -right-4 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+            {{ session('cart') ? count(session('cart')) : 0 }}
+          </span>
+        </a>
+
       </div>
 
       <div class="flex items-center gap-3">

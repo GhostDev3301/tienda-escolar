@@ -11,7 +11,29 @@
     </div>
     <div class="mt-2 flex items-center justify-between">
       <span class="text-lg font-bold text-primary">$ {{ number_format($product['price'], 0, ',', '.') }}</span>
-      <button class="text-sm px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-green-700">Agregar</button>
+      
+    <button 
+      onclick="addToCart({{ $product['id'] }}, '{{ $product['name'] }}', {{ $product['price'] }}, '{{ $product['image'] }}')"
+      class="text-sm px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-green-700">
+      Agregar
+    </button>
+
     </div>
   </div>
+  <script>
+  function addToCart(id, name, price, image) {
+    fetch(`/cart/add/${id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({ name, price, image })
+    })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("cart-count").innerText = data.count;
+    });
+  }
+  </script>
 </article>

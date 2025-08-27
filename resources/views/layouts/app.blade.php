@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>@yield('title', 'Tienda Escolar')</title>
   <!-- Tailwind CSS CDN para prototipo -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -44,5 +45,22 @@
   </main>
 
   <x-footer />
+  <script>
+  function addToCart(id, name, price, image) {
+    fetch(`/cart/add/${id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({ name, price, image })
+    })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("cart-count").innerText = data.count;
+    })
+    .catch(err => console.error("Error agregando al carrito:", err));
+  }
+  </script>
 </body>
 </html>
