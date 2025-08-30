@@ -19,17 +19,52 @@
       }
     }
   </script>
+
+  <script>
+    (function () {
+      try {
+        if (!sessionStorage.getItem('preloaderShown')) {
+          document.documentElement.classList.add('show-preloader');
+        }
+      } catch (e) {}
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
   </style>
+
+    <!-- 👇 Estilos del preloader -->
+    <style>
+      /* Por defecto, preloader oculto */
+      #preloader { display: none; }
+
+      /* Si <html> tiene .show-preloader, mostramos el preloader y ocultamos el contenido */
+      html.show-preloader #preloader { 
+        display: flex; 
+      }
+      html.show-preloader #app-content { 
+        display: none; 
+      }
+    </style>
   <!-- AlpineJS para interacciones simples -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 </head>
 <body class="bg-gray-50 text-gray-800">
   <x-navbar />
+
+  <!-- Preloader -->
+    <div id="preloader" class="fixed inset-0 z-50 items-center justify-center bg-white">
+        <div class="flex flex-col items-center">
+            <span class="text-5xl animate-bounce">🏫</span>
+            <p class="mt-3 text-lg font-semibold text-gray-700">Cargando Tienda Escolar...</p>
+        </div>
+    </div>
+
+
 
   <!-- Hero / Page header -->
   <header class="bg-gradient-to-br from-primary to-green-700 text-white">
@@ -62,5 +97,19 @@
     .catch(err => console.error("Error agregando al carrito:", err));
   }
   </script>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (document.documentElement.classList.contains('show-preloader')) {
+        setTimeout(function () {
+          document.documentElement.classList.remove('show-preloader');
+          try { sessionStorage.setItem('preloaderShown', '1'); } catch (e) {}
+        }, 800); // duración del preloader en la primera carga
+      }
+    });
+  </script>
+
+
 </body>
 </html>
