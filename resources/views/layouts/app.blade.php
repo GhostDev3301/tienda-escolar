@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>@yield('title', 'Tienda Escolar')</title>
+  <title>@yield('title', 'Lonchera Mágica')</title>
   <!-- Tailwind CSS CDN para prototipo -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -59,8 +59,8 @@
   <!-- Preloader -->
     <div id="preloader" class="fixed inset-0 z-50 items-center justify-center bg-white">
         <div class="flex flex-col items-center">
-            <span class="text-5xl animate-bounce">🏫</span>
-            <p class="mt-3 text-lg font-semibold text-gray-700">Cargando Tienda Escolar...</p>
+            <span class="text-5xl animate-bounce">🥪</span>
+            <p class="mt-3 text-lg font-semibold text-gray-700">Cargando Lonchera Mágica...</p>
         </div>
     </div>
 

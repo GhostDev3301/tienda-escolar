@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Tienda Escolar — Inicio')
-@section('page_title', '¡Bienvenido a la Tienda Escolar!')
+@section('title', 'Lonchera Mágica — Inicio')
+@section('page_title', '¡Bienvenido a Lonchera Mágica!')
 @section('page_subtitle', 'Snacks, bebidas y antojos para alegrar tus recreos')
 
 @section('header_actions')

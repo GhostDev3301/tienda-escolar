@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tienda Escolar — Menú de la Semana')
+@section('title', 'Lonchera Mágica — Menú de la Semana')
 @section('page_title', 'Menú de la Semana')
 @section('page_subtitle', 'Opciones ricas y económicas para cada día')
 

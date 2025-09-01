@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tienda Escolar — Catálogo')
+@section('title', 'Lonchera Mágica — Catálogo')
 @section('page_title', 'Catálogo de Productos')
 @section('page_subtitle', 'Filtra por categoría o busca por nombre')
 

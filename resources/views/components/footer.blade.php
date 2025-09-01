@@ -2,8 +2,8 @@
   <div class="max-w-7xl mx-auto px-4 py-8 grid md:grid-cols-3 gap-8">
     <div>
       <div class="flex items-center gap-2 font-bold text-primary">
-        <span class="text-2xl">🏫</span>
-        <span>Tienda Escolar</span>
+        <span class="text-2xl">🥪</span>
+        <span>Lonchera Mágica</span>
       </div>
       <p class="text-sm text-gray-600 mt-2">Endulzando recreos desde 2025.</p>
     </div>
@@ -22,5 +22,5 @@
       <p class="text-sm text-gray-600">Sábados: 8:00am – 12:00pm</p>
     </div>
   </div>
-  <div class="text-center text-xs text-gray-500 py-4">© {{ date('Y') }} Tienda Escolar. Todos los derechos reservados.</div>
+  <div class="text-center text-xs text-gray-500 py-4">© {{ date('Y') }} Lonchera Mágica. Todos los derechos reservados.</div>
 </footer>
