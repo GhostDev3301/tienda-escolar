@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -86,12 +87,28 @@ class HomeController extends Controller
 
     public function index()
     {
+        $user = Auth::user();
+
         // Productos destacados (primeros 4)
         $featured = array_slice($this->products, 0, 4);
-        return view('pages.home', [
-            'categories' => $this->categories,
-            'featured' => $featured,
-        ]);
+
+        if ($user && $user->role === 'admin') {
+            return view('pages.home', [
+                'categories' => $this->categories,
+                'featured' => $featured,
+            ]);
+        } elseif ($user && $user->role === 'padre') {
+            return view('pages.home', [
+                'categories' => $this->categories,
+                'featured' => $featured,
+                'hijos' => $user->hijos
+            ]);
+        } else {
+            return view('pages.home', [
+                'categories' => $this->categories,
+                'featured' => $featured,
+            ]);
+        }
     }
 
     public function catalog(Request $request)

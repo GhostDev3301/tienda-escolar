@@ -6,17 +6,27 @@
         <span>Lonchera Mágica</span>
       </a>
 
+      <!-- Links escritorio -->
       <div class="hidden md:flex items-center gap-6">
         <a href="{{ route('home') }}" class="hover:text-primary">Inicio</a>
         <a href="{{ route('catalog') }}" class="hover:text-primary">Catálogo</a>
         <a href="{{ route('menu') }}" class="hover:text-primary">Menú de la Semana</a>
         <a href="{{ route('about') }}" class="hover:text-primary">Nosotros</a>
-        <a href="{{ route('contact') }}" class="hover:text-primary">Contacto</a>
 
+        @auth
+          @if(auth()->user()->role === 'padre')
+            <a href="{{ route('dashboard.padre') }}" class="hover:text-primary">Dashboard</a>
+          @else
+            <a href="{{ route('contact') }}" class="hover:text-primary">Contacto</a>
+          @endif
+        @endauth
+
+        @guest
+          <a href="{{ route('contact') }}" class="hover:text-primary">Contacto</a>
+        @endguest
       </div>
 
-
-        <!-- Carrito (visible siempre) -->
+      <!-- Carrito -->
       <div class="flex items-center">
         <a href="{{ route('cart.index') }}" class="relative">
           Carrito 🛒
@@ -26,10 +36,26 @@
         </a>
       </div>
 
+      <!-- Logout o botón menú móvil -->
       <div class="flex items-center gap-3">
-        <form action="{{ route('catalog') }}" method="get" class="hidden md:block">
-          <input name="q" type="search" placeholder="Buscar..." class="rounded-xl border-gray-300 focus:border-primary focus:ring-primary" />
-        </form>
+        @auth
+          <!-- Logout -->
+          <form action="{{ route('logout') }}" method="post">
+            @csrf
+            <button type="submit" class="px-3 py-1 rounded bg-red-500 text-white hover:bg-red-600">
+              Cerrar Sesión
+            </button>
+          </form>
+        @endauth
+
+        @guest
+          <!-- Si no está logueado, muestra buscador -->
+          <form action="{{ route('catalog') }}" method="get" class="hidden md:block">
+            <input name="q" type="search" placeholder="Buscar..." class="rounded-xl border-gray-300 focus:border-primary focus:ring-primary" />
+          </form>
+        @endguest
+
+        <!-- Botón móvil -->
         <button class="md:hidden p-2" @click="open = !open" aria-label="Abrir menú">
           ☰
         </button>
@@ -44,10 +70,29 @@
       <a href="{{ route('catalog') }}" class="py-2">Catálogo</a>
       <a href="{{ route('menu') }}" class="py-2">Menú de la Semana</a>
       <a href="{{ route('about') }}" class="py-2">Nosotros</a>
-      <a href="{{ route('contact') }}" class="py-2">Contacto</a>
-      <form action="{{ route('catalog') }}" method="get" class="pt-2">
-        <input name="q" type="search" placeholder="Buscar..." class="w-full rounded-xl border-gray-300 focus:border-primary focus:ring-primary" />
-      </form>
+
+      @auth
+        @if(auth()->user()->role === 'padre')
+          <a href="{{ route('dashboard.padre') }}" class="py-2">Dashboard</a>
+        @else
+          <a href="{{ route('contact') }}" class="py-2">Contacto</a>
+        @endif
+
+        <!-- Logout en móvil -->
+        <form action="{{ route('logout') }}" method="post" class="pt-2">
+          @csrf
+          <button type="submit" class="w-full px-3 py-2 rounded bg-red-500 text-white hover:bg-red-600">
+            Cerrar Sesión
+          </button>
+        </form>
+      @endauth
+
+      @guest
+        <a href="{{ route('contact') }}" class="py-2">Contacto</a>
+        <form action="{{ route('catalog') }}" method="get" class="pt-2">
+          <input name="q" type="search" placeholder="Buscar..." class="w-full rounded-xl border-gray-300 focus:border-primary focus:ring-primary" />
+        </form>
+      @endguest
     </div>
   </div>
 </nav>

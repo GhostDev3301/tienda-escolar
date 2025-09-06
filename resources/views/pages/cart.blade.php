@@ -15,7 +15,9 @@
     @if(empty($cart))
         <div class="text-center py-10">
             <p class="text-gray-600">Tu carrito está vacío 🛒</p>
-            <a href="{{ route('catalog') }}" class="mt-4 inline-block px-4 py-2 bg-primary text-white rounded-xl">Ir al catálogo</a>
+            <a href="{{ route('catalog') }}" class="mt-4 inline-block px-4 py-2 bg-primary text-white rounded-xl">
+                Ir al catálogo
+            </a>
         </div>
     @else
         <div class="overflow-x-auto">
@@ -31,19 +33,27 @@
                 </thead>
                 <tbody>
                     @php $totalGeneral = 0; @endphp
-                    @foreach($cart as $item)
-                        @php $subtotal = $item['price'] * $item['quantity']; @endphp
-                        @php $totalGeneral += $subtotal; @endphp
+                    @foreach($cart as $id => $item)
+                        @php 
+                            $subtotal = $item['price'] * $item['cantidad']; 
+                            $totalGeneral += $subtotal; 
+                        @endphp
                         <tr class="border-b">
                             <td class="px-4 py-3 flex items-center gap-3">
-                                <img src="{{ $item['image'] }}" class="w-16 h-16 rounded-lg object-cover" alt="">
+                                <img src="{{ $item['imagen'] }}" class="w-16 h-16 rounded-lg object-cover" alt="">
                                 <span>{{ $item['name'] }}</span>
                             </td>
-                            <td class="px-4 py-3">${{ number_format($item['price'], 0, ',', '.') }}</td>
-                            <td class="px-4 py-3">{{ $item['quantity'] }}</td>
-                            <td class="px-4 py-3 font-semibold">${{ number_format($subtotal, 0, ',', '.') }}</td>
                             <td class="px-4 py-3">
-                                <form action="{{ route('cart.remove', $item['id']) }}" method="POST">
+                                ${{ number_format($item['price'], 0, ',', '.') }}
+                            </td>
+                            <td class="px-4 py-3">
+                                {{ $item['cantidad'] }}
+                            </td>
+                            <td class="px-4 py-3 font-semibold">
+                                ${{ number_format($subtotal, 0, ',', '.') }}
+                            </td>
+                            <td class="px-4 py-3">
+                                <form action="{{ route('cart.remove', $id) }}" method="POST">
                                     @csrf
                                     <button class="text-red-500 hover:underline">Eliminar</button>
                                 </form>
@@ -52,10 +62,23 @@
                     @endforeach
                     <tr class="bg-gray-100 font-bold">
                         <td colspan="3" class="px-4 py-3 text-right">Total General:</td>
-                        <td colspan="2" class="px-4 py-3">${{ number_format($totalGeneral, 0, ',', '.') }}</td>
+                        <td colspan="2" class="px-4 py-3">
+                            ${{ number_format($totalGeneral, 0, ',', '.') }}
+                        </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        {{-- Botón para finalizar la compra --}}
+        <div class="mt-6 text-right">
+            <form action="{{ route('cart.checkout') }}" method="POST">
+                @csrf
+                <button type="submit" 
+                    class="px-6 py-3 bg-green-600 text-white rounded-xl shadow hover:bg-green-700 transition">
+                    Finalizar Compra
+                </button>
+            </form>
         </div>
     @endif
 
