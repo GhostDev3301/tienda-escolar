@@ -7,7 +7,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PadreDashboardController;
 use App\Http\Controllers\PasswordResetController;
-
+use App\Http\Controllers\ProductController;
 
 
 // Página inicial -> si está logueado va al catálogo, si no al login
@@ -35,13 +35,19 @@ Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name(
 Route::get('/home', [HomeController::class, 'index'])->middleware('auth')->name('home');
 
 
-Route::get('/padre/dashboard', [PadreDashboardController::class, 'index'])
-    ->middleware('auth')
-    ->name('dashboard.padre');
+Route::get('/padre/dashboard', [HomeController::class, 'dashboardPadre'])
+    ->name('dashboard.padre')
+    ->middleware('auth');
+
 
 
 // Páginas públicas (principal es el catálogo)
-Route::get('/catalogo', [HomeController::class, 'catalog'])->name('catalog');
+
+Route::get('/catalog', [ProductController::class, 'index'])->name('catalog');
+Route::get('/product/{id}', [ProductController::class, 'show'])->name('product.show');
+
+
+
 Route::get('/menu-semanal', [MenuController::class, 'index'])->name('menu');
 Route::get('/nosotros', [HomeController::class, 'about'])->name('about');
 Route::get('/contacto', [HomeController::class, 'contact'])->name('contact');

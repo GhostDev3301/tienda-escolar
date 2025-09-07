@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
+use App\Models\Product;
 
 class HomeController extends Controller
 {
@@ -34,63 +36,15 @@ class HomeController extends Controller
         ],
     ];
 
-    private array $products = [
-        [
-            'id' => 1,
-            'name' => 'Chocobarra Clásica',
-            'price' => 3500,
-            'category' => 'dulces',
-            'image' => 'https://placehold.co/600x400?text=Chocobarra',
-            'badge' => 'Nuevo',
-        ],
-        [
-            'id' => 2,
-            'name' => 'Gomitas Frutales',
-            'price' => 2000,
-            'category' => 'confites',
-            'image' => 'https://placehold.co/600x400?text=Gomitas',
-            'badge' => 'Top ventas',
-        ],
-        [
-            'id' => 3,
-            'name' => 'Papitas Onduladas',
-            'price' => 2800,
-            'category' => 'snacks',
-            'image' => 'https://placehold.co/600x400?text=Papitas',
-            'badge' => null,
-        ],
-        [
-            'id' => 4,
-            'name' => 'Jugo Tropical 300ml',
-            'price' => 2500,
-            'category' => 'bebidas',
-            'image' => 'https://placehold.co/600x400?text=Jugo+Tropical',
-            'badge' => 'Fresco',
-        ],
-        [
-            'id' => 5,
-            'name' => 'Galletas de Vainilla',
-            'price' => 2200,
-            'category' => 'snacks',
-            'image' => 'https://placehold.co/600x400?text=Galletas',
-            'badge' => null,
-        ],
-        [
-            'id' => 6,
-            'name' => 'Caramelos de Leche',
-            'price' => 1500,
-            'category' => 'confites',
-            'image' => 'https://placehold.co/600x400?text=Caramelos',
-            'badge' => null,
-        ],
-    ];
-
     public function index()
     {
         $user = Auth::user();
 
+        // Traer productos de la BD
+        $products = Product::all();
+
         // Productos destacados (primeros 4)
-        $featured = array_slice($this->products, 0, 4);
+        $featured = $products->take(4);
 
         if ($user && $user->role === 'admin') {
             return view('pages.home', [
@@ -101,7 +55,7 @@ class HomeController extends Controller
             return view('pages.home', [
                 'categories' => $this->categories,
                 'featured' => $featured,
-                'hijos' => $user->hijos
+                'hijos' => $user->hijos // asegúrate de tener definida esta relación en el modelo User
             ]);
         } else {
             return view('pages.home', [
@@ -116,20 +70,22 @@ class HomeController extends Controller
         $category = $request->get('categoria');
         $q = $request->get('q');
 
-        $filtered = array_filter($this->products, function ($p) use ($category, $q) {
-            $ok = true;
-            if ($category) {
-                $ok = $ok && $p['category'] === $category;
-            }
-            if ($q) {
-                $ok = $ok && str_contains(mb_strtolower($p['name']), mb_strtolower($q));
-            }
-            return $ok;
-        });
+        // Construir query filtrada
+        $query = Product::query();
+
+        if ($category) {
+            $query->where('category', $category);
+        }
+
+        if ($q) {
+            $query->where('name', 'like', "%$q%");
+        }
+
+        $products = $query->get();
 
         return view('pages.catalog', [
             'categories' => $this->categories,
-            'products' => $filtered,
+            'products' => $products,
             'activeCategory' => $category,
             'q' => $q,
         ]);
@@ -143,5 +99,45 @@ class HomeController extends Controller
     public function contact()
     {
         return view('pages.contact');
+    }
+
+    public function dashboardPadre()
+    {
+        $user = Auth::user();
+
+        // Verificamos que sea padre
+        if ($user->role !== 'padre') {
+            abort(403, 'No tienes permisos para acceder a esta sección');
+        }
+
+        /** @var \App\Models\User $padre */
+        $padre = User::find(Auth::id());
+
+        // Traer todos los hijos de este padre (según la relación definida en User)
+        $hijos = $padre ? $padre->hijos()->with('consumos.producto')->get() : collect();
+
+        // Armar estadísticas de consumo por hijo
+        $consumosData = [];
+        foreach ($hijos as $hijo) {
+            $resumen = [];
+
+            foreach ($hijo->consumos as $consumo) {
+                $productoId = $consumo->product_id;
+                if (!isset($resumen[$productoId])) {
+                    $resumen[$productoId] = [
+                        'producto' => $consumo->producto->name,
+                        'cantidad' => 0,
+                    ];
+                }
+                $resumen[$productoId]['cantidad'] += $consumo->cantidad;
+            }
+
+            $consumosData[$hijo->id] = [
+                'hijo' => $hijo->name,
+                'consumos' => $resumen,
+            ];
+        }
+
+        return view('dashboard.padre', compact('consumosData'));
     }
 }

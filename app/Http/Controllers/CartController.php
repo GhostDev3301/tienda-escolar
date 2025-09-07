@@ -18,21 +18,29 @@ class CartController extends Controller
     public function add($id)
     {
         $product = Product::findOrFail($id);
-
         $cart = session()->get('cart', []);
 
         if (isset($cart[$id])) {
             $cart[$id]['cantidad']++;
         } else {
             $cart[$id] = [
-                'name'     => $product->name,
-                'price'    => $product->price,
-                'imagen'   => $product->image ?? 'https://via.placeholder.com/150', // 👈 guarda imagen
+                'name' => $product->name,
+                'price' => $product->price,
                 'cantidad' => 1,
+                'image' => $product->image, // importante para la vista
             ];
         }
 
         session()->put('cart', $cart);
+
+        // Si la petición es AJAX devolvemos JSON
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $product->name . ' agregado al carrito 🛒',
+                'cart_count' => count($cart)
+            ]);
+        }
 
         return redirect()->route('cart.index')->with('success', 'Producto agregado al carrito.');
     }

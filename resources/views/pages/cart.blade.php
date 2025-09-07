@@ -40,7 +40,7 @@
                         @endphp
                         <tr class="border-b">
                             <td class="px-4 py-3 flex items-center gap-3">
-                                <img src="{{ $item['imagen'] }}" class="w-16 h-16 rounded-lg object-cover" alt="">
+                                <img src="{{ $item['image'] }}" class="w-16 h-16 rounded-lg object-cover" alt="">
                                 <span>{{ $item['name'] }}</span>
                             </td>
                             <td class="px-4 py-3">

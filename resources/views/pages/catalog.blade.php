@@ -5,13 +5,16 @@
 @section('page_subtitle', 'Filtra por categoría o busca por nombre')
 
 @section('content')
-  <div class="flex flex-wrap items-center gap-3">
+  {{-- Filtros por categorías y barra de búsqueda --}}
+  <div class="flex flex-wrap items-center gap-3 mb-6">
+    {{-- Chip de "Todos" --}}
     <a href="{{ route('catalog') }}">
       <x-category-chip :active="!$activeCategory">
         <span>Todos</span>
       </x-category-chip>
     </a>
 
+    {{-- Chips de categorías --}}
     @foreach ($categories as $cat)
       <a href="{{ route('catalog', ['categoria' => $cat['slug']]) }}">
         <x-category-chip :active="$activeCategory === $cat['slug']">
@@ -20,16 +23,27 @@
       </a>
     @endforeach
 
-    <form action="{{ route('catalog') }}" method="get" class="ml-auto">
+    {{-- Barra de búsqueda --}}
+    <form action="{{ route('catalog') }}" method="get" class="ml-auto flex">
       @if($activeCategory)
         <input type="hidden" name="categoria" value="{{ $activeCategory }}">
       @endif
-      <input name="q" value="{{ $q }}" placeholder="Buscar producto..." class="rounded-xl border-gray-300 focus:border-primary focus:ring-primary" />
-      <button class="ml-2 px-4 py-2 rounded-xl bg-primary text-white">Buscar</button>
+      <input 
+        type="text" 
+        name="q" 
+        value="{{ $q }}" 
+        placeholder="Buscar producto..." 
+        class="rounded-l-xl border-gray-300 focus:border-primary focus:ring-primary px-3"
+      />
+      <button 
+        class="px-4 py-2 rounded-r-xl bg-primary text-white hover:bg-primary/90 transition">
+        Buscar
+      </button>
     </form>
   </div>
 
-  <div class="mt-8 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+  {{-- Grid de productos --}}
+  <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     @forelse ($products as $product)
       <x-product-card :product="$product" />
     @empty
